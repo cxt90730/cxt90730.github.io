@@ -1,0 +1,200 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>kubernetes学习（二）Trouble Shooting | XT's Blog</title><meta name="keywords" content="kubernetes"><meta name="author" content="Xiaotian Cui"><meta name="copyright" content="Xiaotian Cui"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="k8s Trouble Shooting1. kubectl –generator 参数被弃用问题解决k8s的书籍参考的是《kubernetes in Action》这本书，但是在后期发现使用 1kubectl run kubia --image&#x3D;luksa&#x2F;kubia --port&#x3D;8080 --generator&#x3D;run-pod&#x2F;v1 发现报错">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubernetes学习（二）Trouble Shooting">
+<meta property="og:url" content="http://cxt90730.tech/2021/07/08/kubernetes%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
+<meta property="og:site_name" content="XT&#39;s Blog">
+<meta property="og:description" content="k8s Trouble Shooting1. kubectl –generator 参数被弃用问题解决k8s的书籍参考的是《kubernetes in Action》这本书，但是在后期发现使用 1kubectl run kubia --image&#x3D;luksa&#x2F;kubia --port&#x3D;8080 --generator&#x3D;run-pod&#x2F;v1 发现报错">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-07-08T02:45:00.000Z">
+<meta property="article:modified_time" content="2021-07-28T08:25:06.192Z">
+<meta property="article:author" content="Xiaotian Cui">
+<meta property="article:tag" content="kubernetes">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://cxt90730.tech/2021/07/08/kubernetes%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-07-28 16:25:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/L.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">XT's Blog</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">kubernetes学习（二）Trouble Shooting</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-07-08T02:45:00.000Z" title="发表于 2021-07-08 10:45:00">2021-07-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-28T08:25:06.192Z" title="更新于 2021-07-28 16:25:06">2021-07-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/kubernetes/">kubernetes</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="k8s-Trouble-Shooting"><a href="#k8s-Trouble-Shooting" class="headerlink" title="k8s Trouble Shooting"></a>k8s Trouble Shooting</h1><h2 id="1-kubectl-–generator-参数被弃用问题解决"><a href="#1-kubectl-–generator-参数被弃用问题解决" class="headerlink" title="1. kubectl –generator 参数被弃用问题解决"></a>1. kubectl –generator 参数被弃用问题解决</h2><p>k8s的书籍参考的是《kubernetes in Action》这本书，但是在后期发现使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl run kubia --image&#x3D;luksa&#x2F;kubia --port&#x3D;8080 --generator&#x3D;run-pod&#x2F;v1</span><br></pre></td></tr></table></figure>
+<p>发现报错：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Flag --generator has been deprecated, has no effect and will be removed in the future.</span><br></pre></td></tr></table></figure>
+
+<p>原因是生成器参数已经被弃用。<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/reference/kubectl/conventions/#%E7%94%9F%E6%88%90%E5%99%A8">https://kubernetes.io/zh/docs/reference/kubectl/conventions/#%E7%94%9F%E6%88%90%E5%99%A8</a></p>
+<p>解决办法</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/setup/learning-environment/minikube/">https://kubernetes.io/zh/docs/setup/learning-environment/minikube/</a></p>
+<p>让我们使用名为 echoserver 的镜像创建一个 Kubernetes Deployment，并使用 –port 在端口 8080 上暴露服务。echoserver 是一个简单的 HTTP 服务器。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl run kubia --image&#x3D;luksa&#x2F;kubia --port&#x3D;8080 </span><br></pre></td></tr></table></figure>
+
+<p>输出类似于：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod&#x2F;kubia created</span><br></pre></td></tr></table></figure>
+<p>将其作为 Service 公开：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl expose pod kubia --type&#x3D;NodePort </span><br></pre></td></tr></table></figure>
+
+<p>选项 –type = NodePort 指定 Service 的类型。</p>
+<p>输出类似于：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service&#x2F;kubia exposed</span><br></pre></td></tr></table></figure>
+
+<p>现在Pod 已经启动，但是必须等到 Pod 启动完全才能通过暴露的 Service 访问它。</p>
+<p>检查 Pod 是否启动并运行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod</span><br></pre></td></tr></table></figure>
+<p>果输出显示 STATUS 为 ContainerCreating，则表明 Pod 仍在创建中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">NAME                              READY     STATUS              RESTARTS   AGE</span><br><span class="line">hello-minikube-3383150820-vctvh   0&#x2F;1       ContainerCreating   0          3s</span><br><span class="line"></span><br><span class="line">#如果输出显示 STATUS 为 Running，则 Pod 现在正在运行：</span><br><span class="line"></span><br><span class="line">NAME                              READY     STATUS    RESTARTS   AGE</span><br><span class="line">hello-minikube-3383150820-vctvh   1&#x2F;1       Running   0          13s</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>获取暴露 Service 的 URL 以查看 Service 的详细信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">minikube service kubia --url</span><br></pre></td></tr></table></figure>
+
+<p>删除 Service：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete services kubia</span><br></pre></td></tr></table></figure>
+
+<p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/cangye0504/article/details/106179563">https://blog.csdn.net/cangye0504/article/details/106179563</a></p>
+<h2 id="2-Ingress-Nginx-跳转308问题"><a href="#2-Ingress-Nginx-跳转308问题" class="headerlink" title="2. Ingress Nginx 跳转308问题"></a>2. Ingress Nginx 跳转308问题</h2><p>加入注解：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">annotations:</span><br><span class="line">    nginx.ingress.kubernetes.io&#x2F;ssl-redirect: &quot;false&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Too-large-body-和-Too-big-header"><a href="#3-Too-large-body-和-Too-big-header" class="headerlink" title="3. Too large body 和 Too big header"></a>3. Too large body 和 Too big header</h2><p>502 – too big header<br>502错误一般是后端服务不可用，但这里是nginx-ingress返回的，在nginx-ingress可看到如下日志：<br>upstream sent too big header while reading response header from upstream, client…</p>
+<p>需要在ingress配置如下参数</p>
+<p>apiVersion: extensions/v1beta1<br>kind: Ingress<br>metadata:<br>  annotations:<br>    nginx.ingress.kubernetes.io/proxy-buffer-size: 128k #根据实际情况配置<br>    nginx.ingress.kubernetes.io/proxy-buffering: “on”<br>    nginx.ingress.kubernetes.io/server-snippet: |<br>      large_client_header_buffers 16 128K;<br>      client_header_buffer_size 128k;</p>
+<p>431/400 – too big header<br>http header过大也有可能返回400/431, 可按照上述调整，如果还是有问题需要检查后端服务的header设置，比如golang http header默认是1M;<br>springboot应用需要在application.properties加上server.max-http-header-size=32KB等</p>
+<p>413 – too large body<br>如果返回413，则超过了body size的限制（默认1M）, 可在ingress annotation添加<br>nginx.ingress.kubernetes.io/proxy-body-size: 8m</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Xiaotian Cui</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cxt90730.tech/2021/07/08/kubernetes%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/">http://cxt90730.tech/2021/07/08/kubernetes%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cxt90730.tech" target="_blank">XT's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/kubernetes/">kubernetes</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/07/27/kubernates%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">kubernates学习（三）helm 安装 redis</div></div></a></div><div class="next-post pull-right"><a href="/2021/07/06/vue%E9%A1%B9%E7%9B%AEbuild%E6%89%93%E5%8C%85%E6%97%B6%E6%8A%A5%E9%94%99-%E2%80%9CJavaScript-heap-out-of-memory%E2%80%9D-%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">vue项目build打包时报错 “JavaScript heap out of memory” 的解决办法</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/07/27/kubernates学习（二）/" title="kubernates学习（三）helm 安装 redis"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-27</div><div class="title">kubernates学习（三）helm 安装 redis</div></div></a></div><div><a href="/2021/01/06/kubernetes学习（一）概念/" title="kubernetes学习（一）概念"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-06</div><div class="title">kubernetes学习（一）概念</div></div></a></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/L.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Xiaotian Cui</div><div class="author-info__description">Lazy man</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cxt90730"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cxt90730" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:cxt90730@126.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">wx:cxt90730</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#k8s-Trouble-Shooting"><span class="toc-number">1.</span> <span class="toc-text">k8s Trouble Shooting</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-kubectl-%E2%80%93generator-%E5%8F%82%E6%95%B0%E8%A2%AB%E5%BC%83%E7%94%A8%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"><span class="toc-number">1.1.</span> <span class="toc-text">1. kubectl –generator 参数被弃用问题解决</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Ingress-Nginx-%E8%B7%B3%E8%BD%AC308%E9%97%AE%E9%A2%98"><span class="toc-number">1.2.</span> <span class="toc-text">2. Ingress Nginx 跳转308问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Too-large-body-%E5%92%8C-Too-big-header"><span class="toc-number">1.3.</span> <span class="toc-text">3. Too large body 和 Too big header</span></a></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/05/07/Untitled/" title="Twins，一个简单的主从模式应用"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Twins，一个简单的主从模式应用"/></a><div class="content"><a class="title" href="/2022/05/07/Untitled/" title="Twins，一个简单的主从模式应用">Twins，一个简单的主从模式应用</a><time datetime="2022-05-07T09:41:00.000Z" title="发表于 2022-05-07 17:41:00">2022-05-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/11/iTerm%E9%85%8D%E7%BD%AEssh-config/" title="iTerm配置ssh config"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="iTerm配置ssh config"/></a><div class="content"><a class="title" href="/2022/03/11/iTerm%E9%85%8D%E7%BD%AEssh-config/" title="iTerm配置ssh config">iTerm配置ssh config</a><time datetime="2022-03-11T03:34:40.000Z" title="发表于 2022-03-11 11:34:40">2022-03-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/11/%E5%88%87%E6%8D%A2golang%E7%89%88%E6%9C%AC/" title="一键切换golang版本"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一键切换golang版本"/></a><div class="content"><a class="title" href="/2022/01/11/%E5%88%87%E6%8D%A2golang%E7%89%88%E6%9C%AC/" title="一键切换golang版本">一键切换golang版本</a><time datetime="2022-01-11T08:53:00.000Z" title="发表于 2022-01-11 16:53:00">2022-01-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/25/element-css%E4%BF%AE%E6%94%B9/" title="element css修改"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="element css修改"/></a><div class="content"><a class="title" href="/2021/10/25/element-css%E4%BF%AE%E6%94%B9/" title="element css修改">element css修改</a><time datetime="2021-10-25T08:22:00.000Z" title="发表于 2021-10-25 16:22:00">2021-10-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/08/vue3-vue-router/" title="vue3+vue router"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="vue3+vue router"/></a><div class="content"><a class="title" href="/2021/10/08/vue3-vue-router/" title="vue3+vue router">vue3+vue router</a><time datetime="2021-10-08T02:59:04.000Z" title="发表于 2021-10-08 10:59:04">2021-10-08</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Xiaotian Cui</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script></div></body></html>

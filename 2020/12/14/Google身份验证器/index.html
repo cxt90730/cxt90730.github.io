@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Google身份验证器与OTP | XT's Blog</title><meta name="keywords" content="安全,加密"><meta name="author" content="Xiaotian Cui"><meta name="copyright" content="Xiaotian Cui"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="Google身份验证器与OTP背景我司登录堡垒机需要Google身份验证器 Authenticator APP验证，账号由于是别人的，导出分享给我的时候是个二维码但是。。。我的手机的Authenticator APP要扫条形码才能导入？？？？？？？？？不知道咋整了，只能接着深入了下原理。 二维码解析后格式大概是这样的： 1otpauth-migration:&#x2F;&#x2F;offline?">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google身份验证器与OTP">
+<meta property="og:url" content="http://cxt90730.tech/2020/12/14/Google%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%99%A8/index.html">
+<meta property="og:site_name" content="XT&#39;s Blog">
+<meta property="og:description" content="Google身份验证器与OTP背景我司登录堡垒机需要Google身份验证器 Authenticator APP验证，账号由于是别人的，导出分享给我的时候是个二维码但是。。。我的手机的Authenticator APP要扫条形码才能导入？？？？？？？？？不知道咋整了，只能接着深入了下原理。 二维码解析后格式大概是这样的： 1otpauth-migration:&#x2F;&#x2F;offline?">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-14T07:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-15T18:07:39.884Z">
+<meta property="article:author" content="Xiaotian Cui">
+<meta property="article:tag" content="安全">
+<meta property="article:tag" content="加密">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://cxt90730.tech/2020/12/14/Google%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%99%A8/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-16 02:07:39'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/L.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">XT's Blog</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">Google身份验证器与OTP</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-14T07:00:00.000Z" title="发表于 2020-12-14 15:00:00">2020-12-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-15T18:07:39.884Z" title="更新于 2020-12-16 02:07:39">2020-12-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AE%89%E5%85%A8/">安全</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AE%89%E5%85%A8/%E5%8A%A0%E5%AF%86/">加密</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Google身份验证器与OTP"><a href="#Google身份验证器与OTP" class="headerlink" title="Google身份验证器与OTP"></a>Google身份验证器与OTP</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>我司登录堡垒机需要Google身份验证器 <code>Authenticator</code> APP验证，账号由于是别人的，导出分享给我的时候是个二维码但是。。。我的手机的Authenticator APP要扫条形码才能导入？？？？？？？？？不知道咋整了，只能接着深入了下原理。</p>
+<p>二维码解析后格式大概是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">otpauth-migration:&#x2F;&#x2F;offline?data&#x3D;CjEKCo5%2BDXXXXXXXXXXXXXXXX6IAEoATACEAEYASAAKIPtjdj4%2F%2F%2F%2F%2FwE%3D</span><br></pre></td></tr></table></figure>
+
+<p>查了下资料，这个是采用了OTP算法，于是大概学习了下。</p>
+<h2 id="OTP原理"><a href="#OTP原理" class="headerlink" title="OTP原理"></a>OTP原理</h2><p>动态口令算法又叫一次性口令算法，英文写作OTP(One-Time Password Algorithm)。<br>OTP的算法一般不采用对称加解密算法（如DES，AES），而是采用单向散列算法（SHA-1等）。原因是这样的，拿时间型令牌说明，密钥＋时间（动态因子）＝OTP，时间是知道的，每分钟产生的动态口令能通过硬件知道，DES算法也是公开的，这样就有反推出密钥的可能性。而单向散列算法，即使知道通算法计算的结果OTP，由于算法保证单向，那么从根本上就断绝了反推密钥的途径。</p>
+<p>OTP类型包括：</p>
+<ul>
+<li>时间同步（TOTP）</li>
+<li>事件同步（HOTP）</li>
+<li>挑战 / 应答（OCRA）</li>
+</ul>
+<p>像 <code>Google Authenticator</code> 30s更新一次的，绝壁是使用了TOTP(Time-Based One-Time Password Algorithm) — 时间同步型动态口令。</p>
+<h3 id="HOTP"><a href="#HOTP" class="headerlink" title="HOTP"></a>HOTP</h3><p>HOTP(HMAC-base On-Time Password)译为基于HMAC的一次性密码，也称事件同步的动态密码。</p>
+<p>HOTP的工作原理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTOP(K,C)&#x3D;Truncate(HMAC−SHA−1(K,C))</span><br></pre></td></tr></table></figure>
+<p>客户端和服务器事先协商好一个密钥K，用于一次性密码的生成过程。此外，客户端和服务器各有一个计数器C，并且事先将计数值同步。而Truncate是为了获得一个符合HTOP要求的值。</p>
+<h3 id="TOTP"><a href="#TOTP" class="headerlink" title="TOTP"></a>TOTP</h3><p>TOTP(Time-base One-Time Password)译为基于时间的一次性密码，也称时间同步的动态密码.</p>
+<p>TOTP的工作原理:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TOTP&#x3D;Truncate(HMAC−SHA−1(K,T))</span><br></pre></td></tr></table></figure>
+
+<p>TOTP是HOTP的一个变种，将HOTP中的计数器C替换为依托时间的参数T，T是由当前时间(CurrentUnixTime、初始时间(T0)、步长(X)决定的。即：</p>
+<ul>
+<li>T=(CurrentUnixtime−T0)/X</li>
+<li>T0： 开始计步初始化时间，默认为0</li>
+<li>X : 步长steps，默认情况下为30s</li>
+</ul>
+<p>TOTP的要求: </p>
+<ul>
+<li>客户端和服务器必须能够彼此知道或者推算出对方的Unix Time</li>
+<li>客户端和服务器端必须共享一个密钥</li>
+<li>算法必须使用HOTP作为其关键实现环节</li>
+<li>客户端和服务器端必须使用相同的步长X</li>
+<li>每一个客户端必须拥有不同的密钥</li>
+<li>密钥的生成必须足够随机</li>
+<li>密钥必须储存在防篡改的设备上，而且不能在不安全的情况下被访问或使用。</li>
+<li>对该算法中T的实现必须大于int32，因为它在2038年将超出上限。</li>
+<li>T0和X的协商必须在之前的步骤中就已经做好了。</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>github地址:<a target="_blank" rel="noopener" href="https://github.com/dim13/otpauth">https://github.com/dim13/otpauth</a></p>
+<p>按照文档git clone下来，build后，运行二维码解析出来的链接：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./otpauth -link <span class="string">&quot;otpauth-migration://offline?data=CjEKCo5%2BDJxcRfA2iwXXXXXXXXXXXXXXXXXXEoATACEAEYASAAKIPtjdj4%2F%2F%2F%2F%2FwE%3D&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">otpauth:&#x2F;&#x2F;totp&#x2F;%E5%A0%A1%E5%9E%92%E6%9C%BA:zhangxxx?algorithm&#x3D;SHA1&amp;digits&#x3D;6&amp;issuer&#x3D;%E5%A0%A1%E5%9E%92%E6%9C%BA&amp;period&#x3D;30&amp;secret&#x3D;HEHEHEHEHEHE</span><br></pre></td></tr></table></figure>
+
+<p>可以得到如下参数：</p>
+<ul>
+<li>algorithm=SHA1  (散列算法)</li>
+<li>digits=6 （输出数字长度）</li>
+<li>issuer=%E5%A0%A1%E5%9E%92%E6%9C%BA （urlencode后是中文<code>堡垒机</code>）</li>
+<li>period=30 （步长）</li>
+<li>secret=HEHEHEHEHEHE （散列密钥）</li>
+</ul>
+<p>将这些信息填到Google身份验证器，就可以了：</p>
+<p><img src="/images/pasted-25.png" alt="upload successful"></p>
+<p>利用命令行，也可以实现输出动态口令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./otpauth -<span class="built_in">eval</span> -link <span class="string">&quot;otpauth-migration://offline?data=CjEKCo5%2BDJxcRfA2iwXXXXXXXXXXXXXXXXXXEoATACEAEYASAAKIPtjdj4%2F%2F%2F%2F%2FwE%3D&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">540059 堡垒机:zhangxxx</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Xiaotian Cui</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cxt90730.tech/2020/12/14/Google%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%99%A8/">http://cxt90730.tech/2020/12/14/Google%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%99%A8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cxt90730.tech" target="_blank">XT's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AE%89%E5%85%A8/">安全</a><a class="post-meta__tags" href="/tags/%E5%8A%A0%E5%AF%86/">加密</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/16/How-to-Protect-Against-Slow-HTTP-Attacks/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">如何防止慢速HTTP请求攻击</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/11/macOS%E5%8A%A0%E8%BD%BDwindows%E8%99%9A%E6%9C%BAParallels/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">macOS安装windows虚机Parallels</div></div></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/L.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Xiaotian Cui</div><div class="author-info__description">Lazy man</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cxt90730"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cxt90730" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:cxt90730@126.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">wx:cxt90730</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Google%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%99%A8%E4%B8%8EOTP"><span class="toc-number">1.</span> <span class="toc-text">Google身份验证器与OTP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OTP%E5%8E%9F%E7%90%86"><span class="toc-number">1.2.</span> <span class="toc-text">OTP原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HOTP"><span class="toc-number">1.2.1.</span> <span class="toc-text">HOTP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TOTP"><span class="toc-number">1.2.2.</span> <span class="toc-text">TOTP</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.3.</span> <span class="toc-text">实现</span></a></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/05/07/Untitled/" title="Twins，一个简单的主从模式应用"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Twins，一个简单的主从模式应用"/></a><div class="content"><a class="title" href="/2022/05/07/Untitled/" title="Twins，一个简单的主从模式应用">Twins，一个简单的主从模式应用</a><time datetime="2022-05-07T09:41:00.000Z" title="发表于 2022-05-07 17:41:00">2022-05-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/11/iTerm%E9%85%8D%E7%BD%AEssh-config/" title="iTerm配置ssh config"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="iTerm配置ssh config"/></a><div class="content"><a class="title" href="/2022/03/11/iTerm%E9%85%8D%E7%BD%AEssh-config/" title="iTerm配置ssh config">iTerm配置ssh config</a><time datetime="2022-03-11T03:34:40.000Z" title="发表于 2022-03-11 11:34:40">2022-03-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/11/%E5%88%87%E6%8D%A2golang%E7%89%88%E6%9C%AC/" title="一键切换golang版本"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一键切换golang版本"/></a><div class="content"><a class="title" href="/2022/01/11/%E5%88%87%E6%8D%A2golang%E7%89%88%E6%9C%AC/" title="一键切换golang版本">一键切换golang版本</a><time datetime="2022-01-11T08:53:00.000Z" title="发表于 2022-01-11 16:53:00">2022-01-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/25/element-css%E4%BF%AE%E6%94%B9/" title="element css修改"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="element css修改"/></a><div class="content"><a class="title" href="/2021/10/25/element-css%E4%BF%AE%E6%94%B9/" title="element css修改">element css修改</a><time datetime="2021-10-25T08:22:00.000Z" title="发表于 2021-10-25 16:22:00">2021-10-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/08/vue3-vue-router/" title="vue3+vue router"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="vue3+vue router"/></a><div class="content"><a class="title" href="/2021/10/08/vue3-vue-router/" title="vue3+vue router">vue3+vue router</a><time datetime="2021-10-08T02:59:04.000Z" title="发表于 2021-10-08 10:59:04">2021-10-08</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Xiaotian Cui</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script></div></body></html>

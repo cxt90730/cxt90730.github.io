@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prometheus进程监控--process_exporter | XT's Blog</title><meta name="keywords" content="Prometheus"><meta name="author" content="Xiaotian Cui"><meta name="copyright" content="Xiaotian Cui"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="Prometheus进程监控–process_exporterGithub: https:&#x2F;&#x2F;github.com&#x2F;ncabatoff&#x2F;process-exporter 或者下载最新的release（当前是v0.7.5）: 1234$ wget https:&#x2F;&#x2F;github.com&#x2F;ncabatoff&#x2F;process-exporter&#x2F;releases&#x2F;download&#x2F;v0.7.5&#x2F;proces">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Prometheus进程监控--process_exporter">
+<meta property="og:url" content="http://cxt90730.tech/2020/12/07/Prometheus%E8%BF%9B%E7%A8%8B%E7%9B%91%E6%8E%A7-process-exporter/index.html">
+<meta property="og:site_name" content="XT&#39;s Blog">
+<meta property="og:description" content="Prometheus进程监控–process_exporterGithub: https:&#x2F;&#x2F;github.com&#x2F;ncabatoff&#x2F;process-exporter 或者下载最新的release（当前是v0.7.5）: 1234$ wget https:&#x2F;&#x2F;github.com&#x2F;ncabatoff&#x2F;process-exporter&#x2F;releases&#x2F;download&#x2F;v0.7.5&#x2F;proces">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-07T06:44:00.000Z">
+<meta property="article:modified_time" content="2020-12-07T09:26:48.682Z">
+<meta property="article:author" content="Xiaotian Cui">
+<meta property="article:tag" content="Prometheus">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://cxt90730.tech/2020/12/07/Prometheus%E8%BF%9B%E7%A8%8B%E7%9B%91%E6%8E%A7-process-exporter/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-07 17:26:48'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/L.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">XT's Blog</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">Prometheus进程监控--process_exporter</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-07T06:44:00.000Z" title="发表于 2020-12-07 14:44:00">2020-12-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-07T09:26:48.682Z" title="更新于 2020-12-07 17:26:48">2020-12-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9B%91%E6%8E%A7/">监控</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Prometheus进程监控–process-exporter"><a href="#Prometheus进程监控–process-exporter" class="headerlink" title="Prometheus进程监控–process_exporter"></a>Prometheus进程监控–process_exporter</h1><p>Github: <a target="_blank" rel="noopener" href="https://github.com/ncabatoff/process-exporter">https://github.com/ncabatoff/process-exporter</a></p>
+<p>或者下载最新的release（当前是v0.7.5）:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> wget https://github.com/ncabatoff/process-exporter/releases/download/v0.7.5/process-exporter-0.7.5.linux-amd64.tar.gz</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> tar zvxf process-exporter-0.7.5.linux-amd64.tar.gz</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cp process-exporter-0.7.5.linux-amd64/process-exporter /usr/bin/</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>配置/etc/exporters/process-exporter.yaml。更详细的配置参考：<a target="_blank" rel="noopener" href="https://github.com/ncabatoff/process-exporter#using-a-config-file-group-name">https://github.com/ncabatoff/process-exporter#using-a-config-file-group-name</a></li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">process_names:</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;.Matches&#125;&#125;</span>&quot;</span></span><br><span class="line">    <span class="attr">cmdline:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&#x27;/usr/bin/yig&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;.Matches&#125;&#125;</span>&quot;</span></span><br><span class="line">    <span class="attr">cmdline:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&#x27;/usr/bin/caddy&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;.Matches&#125;&#125;</span>&quot;</span></span><br><span class="line">    <span class="attr">cmdline:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&#x27;/usr/bin/meepo&#x27;</span></span><br><span class="line">    </span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;.Matches&#125;&#125;</span>&quot;</span></span><br><span class="line">    <span class="attr">cmdline:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&#x27;kafka.Kafka&#x27;</span>    </span><br><span class="line">    </span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;.Matches&#125;&#125;</span>&quot;</span></span><br><span class="line">    <span class="attr">cmdline:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&#x27;org.apache.zookeeper.server.quorum.QuorumPeerMain&#x27;</span>    </span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>编写systemctl的service文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ vim &#x2F;usr&#x2F;lib&#x2F;systemd&#x2F;system&#x2F;process_exporter.service</span><br><span class="line"> </span><br><span class="line">[Unit]</span><br><span class="line">Description&#x3D;Prometheus exporter for processors metrics, written in Go with pluggable metric collectors.</span><br><span class="line">Documentation&#x3D;https:&#x2F;&#x2F;github.com&#x2F;ncabatoff&#x2F;process-exporter</span><br><span class="line">After&#x3D;network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type&#x3D;simple</span><br><span class="line">User&#x3D;yig</span><br><span class="line">ExecStart&#x3D;&#x2F;usr&#x2F;bin&#x2F;process-exporter -config.path&#x3D;&#x2F;etc&#x2F;exporters&#x2F;process-exporter.yaml</span><br><span class="line">Restart&#x3D;on-failure</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy&#x3D;multi-user.target</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>重新加载 systemctl daemon</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl start process_exporter</span><br><span class="line">systemctl enable process_exporter</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>增加prometheus：</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;process_exporter&#x27;</span></span><br><span class="line">  <span class="attr">static_configs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">targets:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">10.0</span><span class="number">.42</span><span class="number">.61</span><span class="string">:9256</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">region:</span> <span class="string">oss-test-1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Grafana"><a href="#Grafana" class="headerlink" title="Grafana"></a>Grafana</h2><p>grafana -&gt; Create -&gt; import</p>
+<p>添加id：<code>249</code></p>
+<p>Import后，调整Prometheus数据源即可</p>
+<p><img src="/images/pasted-13.png" alt="upload successful"></p>
+<h2 id="Alert"><a href="#Alert" class="headerlink" title="Alert"></a>Alert</h2><ul>
+<li>新增process.rules.yml:</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">groups:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">alert.rules</span></span><br><span class="line">  <span class="attr">rules:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">alert:</span> <span class="string">process_is_down</span>  <span class="comment"># 进程挂了，报警</span></span><br><span class="line">    <span class="attr">expr:</span> <span class="string">sum</span> <span class="string">(namedprocess_namegroup_states)</span> <span class="string">by</span> <span class="string">(groupname,</span> <span class="string">instance,</span> <span class="string">region)</span> <span class="string">==</span> <span class="number">0</span></span><br><span class="line">    <span class="attr">for:</span> <span class="string">30s</span></span><br><span class="line">    <span class="attr">labels:</span></span><br><span class="line">      <span class="attr">region:</span> <span class="string">&#x27;<span class="template-variable">&#123;&#123; $labels.region &#125;&#125;</span>&#x27;</span></span><br><span class="line">      <span class="attr">env:</span> <span class="string">&#x27;test&#x27;</span></span><br><span class="line">      <span class="attr">level:</span> <span class="string">emergency</span></span><br><span class="line">      <span class="attr">expr:</span> <span class="string">sum</span> <span class="string">(namedprocess_namegroup_states)</span> <span class="string">by</span> <span class="string">(groupname,</span> <span class="string">instance,</span> <span class="string">region)</span> <span class="string">==</span> <span class="number">0</span></span><br><span class="line">    <span class="attr">annotations:</span></span><br><span class="line">      <span class="attr">description:</span> <span class="string">&#x27;process: <span class="template-variable">&#123;&#123; $labels.groupname &#125;&#125;</span>, instance: <span class="template-variable">&#123;&#123; $labels.instance &#125;&#125;</span>&#x27;</span></span><br><span class="line">      <span class="attr">value:</span> <span class="string">&#x27;<span class="template-variable">&#123;&#123; $value &#125;&#125;</span>&#x27;</span></span><br><span class="line">      <span class="attr">summary:</span> <span class="string">process</span> <span class="string">is</span> <span class="string">down</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>停掉meepo服务，又tm收到报警。。。</li>
+</ul>
+<p><img src="/images/pasted-14.png" alt="upload successful"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Xiaotian Cui</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cxt90730.tech/2020/12/07/Prometheus%E8%BF%9B%E7%A8%8B%E7%9B%91%E6%8E%A7-process-exporter/">http://cxt90730.tech/2020/12/07/Prometheus%E8%BF%9B%E7%A8%8B%E7%9B%91%E6%8E%A7-process-exporter/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cxt90730.tech" target="_blank">XT's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Prometheus/">Prometheus</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/08/macOS-%E8%A7%A3%E5%86%B3-Chrome-NET-ERR-CERT-INVALID%E7%9A%84%E9%97%AE%E9%A2%98/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">macOS 解决 Chrome NET::ERR_CERT_INVALID的问题</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/03/Prometheus%E7%9B%91%E6%8E%A7Blackbox-probe/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Prometheus监控Blackbox probe</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/12/02/AlertManager/" title="AlertManager 微信报警"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-02</div><div class="title">AlertManager 微信报警</div></div></a></div><div><a href="/2020/12/01/Kafka监控——kafka-exporter/" title="Kafka监控——kafka_exporter"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-01</div><div class="title">Kafka监控——kafka_exporter</div></div></a></div><div><a href="/2020/12/03/Prometheus监控Blackbox-probe/" title="Prometheus监控Blackbox probe"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-03</div><div class="title">Prometheus监控Blackbox probe</div></div></a></div><div><a href="/2020/11/30/Redis监控——redis-exporter/" title="Redis监控——redis_exporter"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-30</div><div class="title">Redis监控——redis_exporter</div></div></a></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/L.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Xiaotian Cui</div><div class="author-info__description">Lazy man</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cxt90730"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cxt90730" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:cxt90730@126.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">wx:cxt90730</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Prometheus%E8%BF%9B%E7%A8%8B%E7%9B%91%E6%8E%A7%E2%80%93process-exporter"><span class="toc-number">1.</span> <span class="toc-text">Prometheus进程监控–process_exporter</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Grafana"><span class="toc-number">1.1.</span> <span class="toc-text">Grafana</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Alert"><span class="toc-number">1.2.</span> <span class="toc-text">Alert</span></a></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/05/07/Untitled/" title="Twins，一个简单的主从模式应用"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Twins，一个简单的主从模式应用"/></a><div class="content"><a class="title" href="/2022/05/07/Untitled/" title="Twins，一个简单的主从模式应用">Twins，一个简单的主从模式应用</a><time datetime="2022-05-07T09:41:00.000Z" title="发表于 2022-05-07 17:41:00">2022-05-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/11/iTerm%E9%85%8D%E7%BD%AEssh-config/" title="iTerm配置ssh config"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="iTerm配置ssh config"/></a><div class="content"><a class="title" href="/2022/03/11/iTerm%E9%85%8D%E7%BD%AEssh-config/" title="iTerm配置ssh config">iTerm配置ssh config</a><time datetime="2022-03-11T03:34:40.000Z" title="发表于 2022-03-11 11:34:40">2022-03-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/11/%E5%88%87%E6%8D%A2golang%E7%89%88%E6%9C%AC/" title="一键切换golang版本"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一键切换golang版本"/></a><div class="content"><a class="title" href="/2022/01/11/%E5%88%87%E6%8D%A2golang%E7%89%88%E6%9C%AC/" title="一键切换golang版本">一键切换golang版本</a><time datetime="2022-01-11T08:53:00.000Z" title="发表于 2022-01-11 16:53:00">2022-01-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/25/element-css%E4%BF%AE%E6%94%B9/" title="element css修改"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="element css修改"/></a><div class="content"><a class="title" href="/2021/10/25/element-css%E4%BF%AE%E6%94%B9/" title="element css修改">element css修改</a><time datetime="2021-10-25T08:22:00.000Z" title="发表于 2021-10-25 16:22:00">2021-10-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/08/vue3-vue-router/" title="vue3+vue router"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="vue3+vue router"/></a><div class="content"><a class="title" href="/2021/10/08/vue3-vue-router/" title="vue3+vue router">vue3+vue router</a><time datetime="2021-10-08T02:59:04.000Z" title="发表于 2021-10-08 10:59:04">2021-10-08</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Xiaotian Cui</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script></div></body></html>

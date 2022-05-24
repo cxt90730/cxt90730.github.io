@@ -1,0 +1,257 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>XT's Blog - record my life</title><meta name="keywords" content="Go"><meta name="author" content="Xiaotian Cui"><meta name="copyright" content="Xiaotian Cui"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="Lazy man">
+<meta property="og:type" content="website">
+<meta property="og:title" content="XT&#39;s Blog">
+<meta property="og:url" content="http://cxt90730.tech/page/2/index.html">
+<meta property="og:site_name" content="XT&#39;s Blog">
+<meta property="og:description" content="Lazy man">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://cxt90730.tech/img/L.jpeg">
+<meta property="article:author" content="Xiaotian Cui">
+<meta property="article:tag" content="Go">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://cxt90730.tech/img/L.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://cxt90730.tech/page/2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2022-05-24 18:22:29'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/L.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div id="body-wrap"><header class="full_page" id="page-header" style="background-image: url(/img/2.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">XT's Blog</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="site-info"><h1 id="site-title">XT's Blog</h1><div id="site-subtitle"><span id="subtitle"></span></div><div id="site_social_icons"><a class="social-icon" href="https://github.com/cxt90730" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:cxt90730@126.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/07/06/vue%E9%A1%B9%E7%9B%AEbuild%E6%89%93%E5%8C%85%E6%97%B6%E6%8A%A5%E9%94%99-%E2%80%9CJavaScript-heap-out-of-memory%E2%80%9D-%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" title="vue项目build打包时报错 “JavaScript heap out of memory” 的解决办法">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="vue项目build打包时报错 “JavaScript heap out of memory” 的解决办法"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/07/06/vue%E9%A1%B9%E7%9B%AEbuild%E6%89%93%E5%8C%85%E6%97%B6%E6%8A%A5%E9%94%99-%E2%80%9CJavaScript-heap-out-of-memory%E2%80%9D-%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" title="vue项目build打包时报错 “JavaScript heap out of memory” 的解决办法">vue项目build打包时报错 “JavaScript heap out of memory” 的解决办法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-07-06T08:15:15.000Z" title="发表于 2021-07-06 16:15:15">2021-07-06</time></span></div><div class="content">vue项目build打包时报错 “JavaScript heap out of memory” 的解决办法这个错误的意思时内存溢出，为什么会内存溢出呢？原来 nodejs 默认限制了最大可使用的内存大小。nodejs V8 引擎在 64 位机器上默认限制使用内存最大不超过 1.7GB，超过这个限制官方建议尝试优化为多线程方式。
+当前端项目非常庞大时，编译时会占用很多资源，所以就会出现内存溢出的问题。
+以下是我的问题解决方法cd到我们的项目目录下执行
+1234&#x2F;&#x2F; windowsset NODE_OPTIONS&#x3D;--max_old_space_size&#x3D;4096&#x2F;&#x2F; mac&#x2F;linuxexport NODE_OPTIONS&#x3D;--max_old_space_size&#x3D;4096</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/06/07/gitlab-drone%E5%AE%89%E8%A3%85/" title="CentOS 8 gitlab+drone安装部署">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CentOS 8 gitlab+drone安装部署"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/07/gitlab-drone%E5%AE%89%E8%A3%85/" title="CentOS 8 gitlab+drone安装部署">CentOS 8 gitlab+drone安装部署</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-07T10:25:00.000Z" title="发表于 2021-06-07 18:25:00">2021-06-07</time></span></div><div class="content">gitlab+drone 安装部署gitlab服务地址：10.0.1.2
+drone服务地址：10.0.1.12
+CentOS版本： 8.3
+gitlab版本： gitlab-ee 13.2
+drone版本：latest。。。
+部署gitlab123456789101112131415161718#### 打开防火墙访问控制firewall-cmd --permanent --add-service&#x3D;httpfirewall-cmd --permanent --add-service&#x3D;httpssystemctl reload firewalld#### 或者关掉防火墙# systemctl stop firewalld# systemctl disable firewalld#### 配置gitlab的yum仓库curl https:&#x2F;&#x2F;packages.gitlab.com&#x2F;install&#x2F;repositories&#x2F;gitlab&#x2F;gitlab-ee&#x2F;script.rpm.sh | bash## ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/06/07/git%E5%85%8D%E9%89%B4%E6%9D%83%E6%96%B9%E6%B3%95/" title="git免鉴权方法">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="git免鉴权方法"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/07/git%E5%85%8D%E9%89%B4%E6%9D%83%E6%96%B9%E6%B3%95/" title="git免鉴权方法">git免鉴权方法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-07T08:10:00.000Z" title="发表于 2021-06-07 16:10:00">2021-06-07</time></span></div><div class="content">git免鉴权方法原文链接：https://blog.csdn.net/fuzhongfaya/article/details/81536522
+1vim .git-credentials
+
+在里面按“i”然后输入：https://{username}:{password}@github.com
+比如 http://aoeddklj:1233ds@github.com
+在终端下执行
+1git config --global credential.helper store
+
+可以看到~/.gitconfig文件，会多了一项：
+12[credential]helper &#x3D; store
+
+这个时候输入命令git clone http://username@url 时不需要输入密码，即可完成代码的git
+</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/06/03/%E5%AE%89%E8%A3%85CentOS%E7%9A%84%E5%9D%91/" title="安装CentOS 8踩坑">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="安装CentOS 8踩坑"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/03/%E5%AE%89%E8%A3%85CentOS%E7%9A%84%E5%9D%91/" title="安装CentOS 8踩坑">安装CentOS 8踩坑</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-03T02:53:00.000Z" title="发表于 2021-06-03 10:53:00">2021-06-03</time></span></div><div class="content">CentOS 8 桌面版安装尝鲜玩，CentOS 8与2021年底不维护了。但安装过程也不少坑。
+
+UltraISO做个CentOS 8引导，minimal / boot 版即可，因为要网络安装。（dvd版U盘放不下，因为做引导只能是FAT32，最大4G，dvd版有8G+。）
+
+记住引导U盘的盘符名称，比如我做完了叫CentOS-8-3-
+
+记得BIOS里调整BOOT顺序
+
+不着急按回车，先点‘e’键，进入编辑模式 
+
+把第三行的语句
+ inst.stage2=hd:LABEL=CentOS-8-2-2004-x86_64-dvd quiet
+修改为你的盘符名称
+inst.stage2=hd:LABEL=CentOS-8-3- quiet
+
+安装时，镜像选择网络安装，填入mirrors.aliyun.com/centos/8/BaseOS/x86_64/os
+
+使用的是阿里巴巴开源镜像站，文件地址:https://mirrors.aliyun.com/repo/Centos-8.repo
+
+
+使用方法：
+1234cd &#x2F;etc&#x2F;yum.repos.d&#x2F;rm ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/05/13/Linux%E8%B8%A9%E5%9D%91%E4%B9%8B%E8%B7%AF-DNS%E6%9F%A5%E8%AF%A2/" title="Jetbrains系列产品重置试用方法">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Jetbrains系列产品重置试用方法"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/05/13/Linux%E8%B8%A9%E5%9D%91%E4%B9%8B%E8%B7%AF-DNS%E6%9F%A5%E8%AF%A2/" title="Jetbrains系列产品重置试用方法">Jetbrains系列产品重置试用方法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-13T06:22:00.000Z" title="发表于 2021-05-13 14:22:00">2021-05-13</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox article-meta__icon"></i><a class="article-meta__categories" href="/categories/Jetbrains/">Jetbrains</a></span></div><div class="content">Jetbrains系列产品重置试用方法原文地址：https://zhile.io/2020/11/18/jetbrains-eval-reset-da33a93d.html
+如何安装插件市场安装：在Settings/Preferences… -&gt; Plugins 内手动添加第三方插件仓库地址：https://plugins.zhile.io
+附：Mac添加方法为Preferences（默认快捷键Command+,），Plugins，点击上面的小齿轮，选择“Manage Plugin Repositories”, 点击+号，添加第三方插件仓库地址：https://plugins.zhile.io
+
+之后搜索“IDE Eval Reset”插件进行安装。如果搜索不到请注意是否做好了上一步？网络是否通畅？插件会提示安装成功。
+如何使用一般来说，在IDE窗口切出去或切回来时（窗口失去/得到焦点）会触发事件，检测是否长时间（25天）没有重置，给通知让你选择。（初次安装因为无法获取上次重置时间，会直接给予提示）也可以手动唤出插件的主界面：
+如果IDE没有打开项目，在Welcome界面点击菜单 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/03/04/%E6%88%90%E4%B8%BA%E4%B8%80%E4%B8%AACTO/" title="成为一个CTO">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="成为一个CTO"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/03/04/%E6%88%90%E4%B8%BA%E4%B8%80%E4%B8%AACTO/" title="成为一个CTO">成为一个CTO</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-03-04T09:59:47.000Z" title="发表于 2021-03-04 17:59:47">2021-03-04</time></span></div><div class="content">https://github.com/kuchin/awesome-cto
+</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/01/26/%E4%B8%8B%E8%BD%BDb%E7%AB%99%E8%A7%86%E9%A2%91/" title="如何下载b站视频">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="如何下载b站视频"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/01/26/%E4%B8%8B%E8%BD%BDb%E7%AB%99%E8%A7%86%E9%A2%91/" title="如何下载b站视频">如何下载b站视频</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-01-26T03:45:00.000Z" title="发表于 2021-01-26 11:45:00">2021-01-26</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox article-meta__icon"></i><a class="article-meta__categories" href="/categories/MacOS/">MacOS</a></span></div><div class="content">Github地址：https://github.com/iawia002/annie不是Mac的自己去下对应的release就好了
+Mac下载1brew install annie
+
+1.对于腾讯视频，B站等网站的普通视频下载方式是简单粗暴的
+annie url             //url就是视频网站 
+2.对于VIP视频就需要获取cookie了。如下图所示
+加参数-c 后面附上cookie.sqlite，然后加上url。至于cookies.sqlite怎么获取看后面
+加参数-i 可以看到详细信息,但是不下载。如下图所示。
+3.cookie.sqlite获取方式annie目前使用FireFox浏览器，和Google浏览器测试没问题
+1.首先打开需要下载的网站，然后登陆VIP，然后点开需要下载的视频网页
+2.打开控制台，然后点击Network，然后刷新页面，点击如下图所示的2所指向的地方，第一行。单击就会出现3，和4.此时复制4的内容到一个文本。命名为cookie.sqlite。将cookie拷贝进去即可
+
+列举视频所有清晰度，但不下载：1annie -i https:&#x2F ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/01/06/kubernetes%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89%E6%A6%82%E5%BF%B5/" title="kubernetes学习（一）概念">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="kubernetes学习（一）概念"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/01/06/kubernetes%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89%E6%A6%82%E5%BF%B5/" title="kubernetes学习（一）概念">kubernetes学习（一）概念</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-01-06T06:03:00.000Z" title="发表于 2021-01-06 14:03:00">2021-01-06</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox article-meta__icon"></i><a class="article-meta__categories" href="/categories/kubernetes/">kubernetes</a></span></div><div class="content">kubernetes学习（一）概念一、Kubernetes概述1.1 Kubernetes是什么Kubernetes是Google在2014年开源的一个容器集群管理系统，Kubernetes简称K8S。
+K8S用于容器化应用程序的部署，扩展和管理。
+K8S提供了容器编排，资源调度，弹性伸缩，部署管理，服务发现等一系列功能。
+Kubernetes目标是让部署容器化应用简单高效。
+1.2 Kubernetes特性自我修复在节点故障时重新启动失败的容器，替换和重新部署，保证预期的副本数量；杀死健康检查失败的容器，并且在未准备好之前不会处理客户端请求，确保线上服务不中断。
+弹性伸缩使用命令、UI或者基于CPU使用情况自动快速扩容和缩容应用程序实例，保证应用业务高峰并发时的高可用性；业务低峰时回收资源，以最小成本运行服务。
+自动部署和回滚K8S采用滚动更新策略更新应用，一次更新一个Pod，而不是同时删除所有Pod，如果更新过程中出现问题，将回滚更改，确保升级不受影响业务。
+服务发现和负载均衡K8S为多个容器提供一个统一访问入口（内部IP地址和一个DNS名称），并且负载均衡关联的所有容器，使得用户 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/12/16/How-to-Protect-Against-Slow-HTTP-Attacks/" title="如何防止慢速HTTP请求攻击">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="如何防止慢速HTTP请求攻击"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/12/16/How-to-Protect-Against-Slow-HTTP-Attacks/" title="如何防止慢速HTTP请求攻击">如何防止慢速HTTP请求攻击</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-16T02:11:10.000Z" title="发表于 2020-12-16 10:11:10">2020-12-16</time></span></div><div class="content">如何防止慢速HTTP请求攻击最近线上出了一些和下载相关的问题，于是间接学习了下慢速HTTP请求攻击的问题。
+参考自：
+https://blog.qualys.com/vulnerabilities-research/2011/11/02/how-to-protect-against-slow-http-attacks
+https://blog.qualys.com/vulnerabilities-research/2011/07/07/identifying-slow-http-attack-vulnerabilities-on-web-applications
+介绍慢速HTTP攻击是一种拒绝服务(DoS)攻击，攻击者将HTTP请求分成多段很小的一部分，然后缓慢地发送到Web服务器。如果HTTP请求不完整，或者传输速率非常低，服务器就会让其资源忙碌地等待其余的数据。当服务器的并发连接数达到最大值时，便形成了DoS攻击。缓慢的HTTP攻击很容易执行，因为攻击者只需要提供很少的资源，一台机器就能够建立数千个到服务器的连接，并且能够在非常短的时间内用最小的带宽生成数千个未完成的 HTTP 请 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/12/14/Google%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%99%A8/" title="Google身份验证器与OTP">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Google身份验证器与OTP"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/12/14/Google%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%99%A8/" title="Google身份验证器与OTP">Google身份验证器与OTP</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-14T07:00:00.000Z" title="发表于 2020-12-14 15:00:00">2020-12-14</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox article-meta__icon"></i><a class="article-meta__categories" href="/categories/%E5%AE%89%E5%85%A8/">安全</a><i class="fas fa-angle-right"></i><a class="article-meta__categories" href="/categories/%E5%AE%89%E5%85%A8/%E5%8A%A0%E5%AF%86/">加密</a></span></div><div class="content">Google身份验证器与OTP背景我司登录堡垒机需要Google身份验证器 Authenticator APP验证，账号由于是别人的，导出分享给我的时候是个二维码但是。。。我的手机的Authenticator APP要扫条形码才能导入？？？？？？？？？不知道咋整了，只能接着深入了下原理。
+二维码解析后格式大概是这样的：
+1otpauth-migration:&#x2F;&#x2F;offline?data&#x3D;CjEKCo5%2BDXXXXXXXXXXXXXXXX6IAEoATACEAEYASAAKIPtjdj4%2F%2F%2F%2F%2FwE%3D
+
+查了下资料，这个是采用了OTP算法，于是大概学习了下。
+OTP原理动态口令算法又叫一次性口令算法，英文写作OTP(One-Time Password Algorithm)。OTP的算法一般不采用对称加解密算法（如DES，AES），而是采用单向散列算法（SHA-1等）。原因是这样的，拿时间型令牌说明，密钥＋时间（动态因子）＝OTP，时间是知道的，每分钟产生的动态口令能通过硬件知道，DES算法也是公开的，这样就有反推出密钥的可能性。 ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/L.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Xiaotian Cui</div><div class="author-info__description">Lazy man</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cxt90730"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cxt90730" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:cxt90730@126.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">wx:cxt90730</div></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/05/07/Untitled/" title="Twins，一个简单的主从模式应用"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Twins，一个简单的主从模式应用"/></a><div class="content"><a class="title" href="/2022/05/07/Untitled/" title="Twins，一个简单的主从模式应用">Twins，一个简单的主从模式应用</a><time datetime="2022-05-07T09:41:00.000Z" title="发表于 2022-05-07 17:41:00">2022-05-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/11/iTerm%E9%85%8D%E7%BD%AEssh-config/" title="iTerm配置ssh config"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="iTerm配置ssh config"/></a><div class="content"><a class="title" href="/2022/03/11/iTerm%E9%85%8D%E7%BD%AEssh-config/" title="iTerm配置ssh config">iTerm配置ssh config</a><time datetime="2022-03-11T03:34:40.000Z" title="发表于 2022-03-11 11:34:40">2022-03-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/11/%E5%88%87%E6%8D%A2golang%E7%89%88%E6%9C%AC/" title="一键切换golang版本"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一键切换golang版本"/></a><div class="content"><a class="title" href="/2022/01/11/%E5%88%87%E6%8D%A2golang%E7%89%88%E6%9C%AC/" title="一键切换golang版本">一键切换golang版本</a><time datetime="2022-01-11T08:53:00.000Z" title="发表于 2022-01-11 16:53:00">2022-01-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/25/element-css%E4%BF%AE%E6%94%B9/" title="element css修改"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="element css修改"/></a><div class="content"><a class="title" href="/2021/10/25/element-css%E4%BF%AE%E6%94%B9/" title="element css修改">element css修改</a><time datetime="2021-10-25T08:22:00.000Z" title="发表于 2021-10-25 16:22:00">2021-10-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/08/vue3-vue-router/" title="vue3+vue router"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="vue3+vue router"/></a><div class="content"><a class="title" href="/2021/10/08/vue3-vue-router/" title="vue3+vue router">vue3+vue router</a><time datetime="2021-10-08T02:59:04.000Z" title="发表于 2021-10-08 10:59:04">2021-10-08</time></div></div></div></div></div><div class="card-widget card-categories"><div class="card-content"><div class="item-headline"><i class="fas fa-folder-open"></i><span>分类</span></div><ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Jetbrains/"><span class="card-category-list-name">Jetbrains</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/MacOS/"><span class="card-category-list-name">MacOS</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/database/"><span class="card-category-list-name">database</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/go/"><span class="card-category-list-name">go</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/kubernetes/"><span class="card-category-list-name">kubernetes</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/python/"><span class="card-category-list-name">python</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%AE%89%E5%85%A8/"><span class="card-category-list-name">安全</span><span class="card-category-list-count">1</span></a></li><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%AE%89%E5%85%A8/%E5%8A%A0%E5%AF%86/"><span class="card-category-list-name">加密</span><span class="card-category-list-count">1</span></a></li></ul>
+            <li class="card-category-list-item more is-center"><a class="card-category-list-link-more" href="/categories/">
+                <span>查看更多</span><i class="fas fa-angle-right"></i></a></li>
+            </ul></div></div><div class="card-widget card-tags"><div class="card-content"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Jetbrains/" style="font-size: 1.2em; color: rgb(90, 50, 180)">Jetbrains</a><a href="/tags/MacOS/" style="font-size: 1.4em; color: rgb(57, 66, 161)">MacOS</a><a href="/tags/AlertManager/" style="font-size: 1.1em; color: rgb(52, 196, 6)">AlertManager</a><a href="/tags/Prometheus/" style="font-size: 1.5em; color: rgb(56, 175, 67)">Prometheus</a><a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 1.1em; color: rgb(85, 125, 64)">安全</a><a href="/tags/%E5%8A%A0%E5%AF%86/" style="font-size: 1.1em; color: rgb(103, 39, 23)">加密</a><a href="/tags/Kafka/" style="font-size: 1.1em; color: rgb(186, 170, 174)">Kafka</a><a href="/tags/kubernetes/" style="font-size: 1.3em; color: rgb(49, 59, 159)">kubernetes</a><a href="/tags/sql/" style="font-size: 1.1em; color: rgb(1, 117, 169)">sql</a><a href="/tags/go/" style="font-size: 1.1em; color: rgb(82, 189, 111)">go</a><a href="/tags/CentOS/" style="font-size: 1.1em; color: rgb(2, 115, 35)">CentOS</a><a href="/tags/Redis/" style="font-size: 1.1em; color: rgb(185, 134, 164)">Redis</a></div></div></div><div class="card-widget card-archives"><div class="card-content"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/05/"><span class="card-archive-list-date">五月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/03/"><span class="card-archive-list-date">三月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/01/"><span class="card-archive-list-date">一月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/10/"><span class="card-archive-list-date">十月 2021</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/09/"><span class="card-archive-list-date">九月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/08/"><span class="card-archive-list-date">八月 2021</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/07/"><span class="card-archive-list-date">七月 2021</span><span class="card-archive-list-count">3</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/06/"><span class="card-archive-list-date">六月 2021</span><span class="card-archive-list-count">3</span></a></li><li class="card-archive-list-item more is-center"><a class="card-archive-list-link-more" href="/archives/">
+              <span>查看更多</span><i class="fas fa-angle-right"  ></i></a></li></ul></div></div><div class="card-widget card-webinfo"><div class="card-content"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">30</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2022-05-24T10:22:29.395Z"></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Xiaotian Cui</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>function subtitleType () {
+  if (true) { 
+    var typed = new Typed("#subtitle", {
+      strings: "hehehehe".split(","),
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50
+    })
+  } else {
+    document.getElementById("subtitle").innerHTML = 'hehehehe'
+  }
+}
+
+if (true) {
+  if (typeof Typed === 'function') subtitleType()
+  else $.getScript('https://cdn.jsdelivr.net/npm/typed.js/lib/typed.min.js', subtitleType)
+} else {
+  subtitleType()
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script></div></body></html>
